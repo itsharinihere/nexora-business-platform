@@ -1,0 +1,1 @@
+"""Utility layer: responses, errors, validation, auth and pagination helpers."""

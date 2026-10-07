@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Design tokens
+   Light and dark are the same variable names with different values, so every
+   utility class (`bg-surface`, `text-ink`) works in both themes unchanged.
+   Values are space-separated RGB channels so Tailwind's <alpha-value> works.
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --nx-canvas: 248 250 252;
+    --nx-surface: 255 255 255;
+    --nx-elevated: 255 255 255;
+    --nx-sunken: 241 245 249;
+
+    --nx-line: 226 232 240;
+    --nx-line-strong: 203 213 225;
+
+    --nx-ink: 15 23 42;
+    --nx-ink-muted: 71 85 105;
+    --nx-ink-subtle: 148 163 184;
+
+    --nx-brand: 79 70 229;
+    --nx-focus-ring: 79 70 229;
+
+    --nx-shadow-xs: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+    --nx-shadow-sm: 0 1px 3px 0 rgb(15 23 42 / 0.08), 0 1px 2px -1px rgb(15 23 42 / 0.06);
+    --nx-shadow-md: 0 4px 12px -2px rgb(15 23 42 / 0.10), 0 2px 6px -2px rgb(15 23 42 / 0.06);
+    --nx-shadow-lg: 0 18px 40px -12px rgb(15 23 42 / 0.20), 0 6px 14px -6px rgb(15 23 42 / 0.10);
+
+    --nx-chart-grid: 226 232 240;
+  }
+
+  .dark {
+    --nx-canvas: 8 11 22;
+    --nx-surface: 15 20 36;
+    --nx-elevated: 21 27 46;
+    --nx-sunken: 11 15 28;
+
+    --nx-line: 39 47 70;
+    --nx-line-strong: 58 68 96;
+
+    --nx-ink: 237 242 252;
+    --nx-ink-muted: 165 178 202;
+    --nx-ink-subtle: 118 131 158;
+
+    --nx-brand: 129 140 248;
+    --nx-focus-ring: 129 140 248;
+
+    --nx-shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.30);
+    --nx-shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.40), 0 1px 2px -1px rgb(0 0 0 / 0.30);
+    --nx-shadow-md: 0 4px 14px -2px rgb(0 0 0 / 0.50), 0 2px 6px -2px rgb(0 0 0 / 0.35);
+    --nx-shadow-lg: 0 20px 44px -14px rgb(0 0 0 / 0.65), 0 8px 18px -8px rgb(0 0 0 / 0.45);
+
+    --nx-chart-grid: 39 47 70;
+  }
+
+  * {
+    @apply border-line;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    /* Guarantees no sideways scrollbar at any viewport width. */
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500/60 ring-offset-2 ring-offset-canvas;
+  }
+
+  ::selection {
+    @apply bg-brand-500/25;
+  }
+
+  /* Tabular figures keep metric columns from jittering as values change. */
+  .nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+  }
+
+  /* Remove the number input spinners; they are tiny targets on mobile. */
+  input[type='number']::-webkit-outer-spin-button,
+  input[type='number']::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@layer components {
+  /* ---- Surfaces ------------------------------------------------------- */
+
+  .nx-card {
+    @apply rounded-xl border border-line bg-surface shadow-xs;
+  }
+
+  .nx-card-hover {
+    @apply transition duration-150 hover:border-line-strong hover:shadow-md;
+  }
+
+  .nx-panel {
+    @apply rounded-xl border border-line bg-surface;
+  }
+
+  /* ---- Skeleton loading ---------------------------------------------- */
+
+  .nx-skeleton {
+    @apply relative overflow-hidden rounded-md bg-sunken;
+  }
+
+  .nx-skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full;
+    background-image: linear-gradient(
+      90deg,
+      transparent,
+      rgb(var(--nx-ink) / 0.06),
+      transparent
+    );
+    animation: nx-shimmer 1.6s infinite;
+  }
+
+  /* ---- Scrollbars ----------------------------------------------------- */
+
+  .nx-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--nx-line-strong)) transparent;
+  }
+
+  .nx-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .nx-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .nx-scroll::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-line-strong;
+  }
+
+  .nx-scroll::-webkit-scrollbar-thumb:hover {
+    @apply bg-ink-subtle;
+  }
+
+  /* Hide the scrollbar on horizontal strips that scroll by touch instead. */
+  .nx-scroll-none {
+    scrollbar-width: none;
+  }
+  .nx-scroll-none::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ---- Tables --------------------------------------------------------- */
+
+  .nx-table {
+    @apply w-full border-collapse text-left text-sm;
+  }
+
+  .nx-th {
+    @apply whitespace-nowrap border-b border-line px-4 py-3 text-2xs font-semibold uppercase tracking-wider text-ink-subtle;
+  }
+
+  .nx-td {
+    @apply border-b border-line/70 px-4 py-3 align-middle;
+  }
+
+  /* ---- Landing page --------------------------------------------------- */
+
+  .nx-grid-bg {
+    background-image:
+      linear-gradient(to right, rgb(var(--nx-line) / 0.55) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(var(--nx-line) / 0.55) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  }
+}
+
+@layer utilities {
+  .nx-no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nx-mask-fade-r {
+    mask-image: linear-gradient(to right, #000 85%, transparent 100%);
+  }
+
+  /* Respect users who ask the OS to reduce motion. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@keyframes nx-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
